@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import {
   FaGithub,
+ FaLinkedin,
   FaEnvelope,
   FaPhoneAlt,
   FaWhatsapp,
@@ -20,7 +21,14 @@ function Footer() {
         </div>
 
         <div className="footer-socials">
-
+<a
+  href="https://www.linkedin.com/in/firas-mostafa-b71843345"
+  target="_blank"
+  rel="noopener noreferrer"
+>
+  <FaLinkedin className="footer-icon" />
+  LinkedIn
+</a>
           <a
             href="https://github.com/firasmostafa"
             target="_blank"
@@ -71,4 +79,4 @@ function Footer() {
   );
 }
 
-export default Footer;
+export default Footer;             
