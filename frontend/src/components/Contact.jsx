@@ -14,15 +14,13 @@ function Contact() {
     },
 
     validationSchema: Yup.object({
-      name: Yup.string()
-        .required("Name is required."),
+      name: Yup.string().required("Name is required."),
 
       email: Yup.string()
         .email("Please enter a valid email address.")
         .required("Email is required."),
 
-      enquiry: Yup.string()
-        .required("Please select an enquiry type."),
+      enquiry: Yup.string().required("Please select an enquiry type."),
 
       message: Yup.string()
         .min(25, "Message must be at least 25 characters.")
@@ -36,26 +34,21 @@ function Contact() {
       setStatus(null);
 
       try {
-        const response = await fetch(
-          "https://firas-portfolio-fullstack-1.onrender.com/api/messages",
-          {
-            method: "POST",
+        const response = await fetch("/api/messages", {
+          method: "POST",
 
-            headers: {
-              "Content-Type": "application/json",
-              Accept: "application/json",
-            },
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
 
-            body: JSON.stringify(values),
-          }
-        );
+          body: JSON.stringify(values),
+        });
 
         const data = await response.json();
 
         if (!response.ok) {
-          throw new Error(
-            data.message || "Unable to send message."
-          );
+          throw new Error(data.message || "Unable to send message.");
         }
 
         setStatus({
@@ -69,8 +62,7 @@ function Contact() {
 
         setStatus({
           type: "error",
-          message:
-            "Something went wrong. Please try again.",
+          message: "Something went wrong. Please try again.",
         });
       } finally {
         setSubmitting(false);
@@ -89,12 +81,10 @@ function Contact() {
   return (
     <section id="contact" className="contact">
       <div className="contact-container">
-
         <h2>Contact Me</h2>
 
         <p>
-          Have a question, project idea, or job opportunity?
-          Send me a message.
+          Have a question, project idea, or job opportunity? Send me a message.
         </p>
 
         <form
@@ -102,9 +92,7 @@ function Contact() {
           onSubmit={formik.handleSubmit}
           noValidate
         >
-          <label htmlFor="name">
-            Name
-          </label>
+          <label htmlFor="name">Name</label>
 
           <input
             id="name"
@@ -115,14 +103,10 @@ function Contact() {
           />
 
           {formik.touched.name && formik.errors.name && (
-            <div className="error-message">
-              {formik.errors.name}
-            </div>
+            <div className="error-message">{formik.errors.name}</div>
           )}
 
-          <label htmlFor="email">
-            Email
-          </label>
+          <label htmlFor="email">Email</label>
 
           <input
             id="email"
@@ -133,51 +117,32 @@ function Contact() {
           />
 
           {formik.touched.email && formik.errors.email && (
-            <div className="error-message">
-              {formik.errors.email}
-            </div>
+            <div className="error-message">{formik.errors.email}</div>
           )}
 
-          <label htmlFor="enquiry">
-            Enquiry Type
-          </label>
+          <label htmlFor="enquiry">Enquiry Type</label>
 
           <select
             id="enquiry"
             className={getInputClass("enquiry")}
             {...formik.getFieldProps("enquiry")}
           >
-            <option value="">
-              Select an enquiry type
-            </option>
+            <option value="">Select an enquiry type</option>
 
-            <option value="general">
-              General Enquiry
-            </option>
+            <option value="general">General Enquiry</option>
 
-            <option value="job">
-              Job Opportunity
-            </option>
+            <option value="job">Job Opportunity</option>
 
-            <option value="project">
-              Project
-            </option>
+            <option value="project">Project</option>
 
-            <option value="other">
-              Other
-            </option>
+            <option value="other">Other</option>
           </select>
 
-          {formik.touched.enquiry &&
-            formik.errors.enquiry && (
-              <div className="error-message">
-                {formik.errors.enquiry}
-              </div>
-            )}
+          {formik.touched.enquiry && formik.errors.enquiry && (
+            <div className="error-message">{formik.errors.enquiry}</div>
+          )}
 
-          <label htmlFor="message">
-            Message
-          </label>
+          <label htmlFor="message">Message</label>
 
           <textarea
             id="message"
@@ -187,17 +152,11 @@ function Contact() {
             {...formik.getFieldProps("message")}
           />
 
-          {formik.touched.message &&
-            formik.errors.message && (
-              <div className="error-message">
-                {formik.errors.message}
-              </div>
-            )}
+          {formik.touched.message && formik.errors.message && (
+            <div className="error-message">{formik.errors.message}</div>
+          )}
 
-          <button
-            type="submit"
-            disabled={formik.isSubmitting}
-          >
+          <button type="submit" disabled={formik.isSubmitting}>
             {formik.isSubmitting ? (
               <>
                 <span className="spinner"></span>
@@ -211,9 +170,7 @@ function Contact() {
           {status && (
             <div
               className={`form-status ${
-                status.type === "success"
-                  ? "success-status"
-                  : "error-status"
+                status.type === "success" ? "success-status" : "error-status"
               }`}
               role="alert"
             >
