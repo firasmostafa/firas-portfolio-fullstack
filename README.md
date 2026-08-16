@@ -274,7 +274,16 @@ The interface is optimized for:
 - Mobile
 
 ---
+## Screenshots
 
+### Home
+![Home Page](screenshots/Home(2).png)
+
+### Projects
+![Projects Page](screenshots/projects.png)
+
+### Contact
+![Contact Page](screenshots/contact.png)
 ## Developer
 
 **Firas Mostafa**  
