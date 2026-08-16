@@ -37,7 +37,7 @@ function Contact() {
 
       try {
         const response = await fetch(
-          "http://127.0.0.1:8000/api/messages",
+          "https://firas-portfolio-fullstack-1.onrender.com/api/messages",
           {
             method: "POST",
 
