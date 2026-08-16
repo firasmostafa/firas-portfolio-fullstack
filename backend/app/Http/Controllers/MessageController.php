@@ -37,9 +37,9 @@ class MessageController extends Controller
         // Save message in MySQL
         $message = Message::create($validated);
 
-        // Send a copy to your email
-        Mail::to('frasm688@gmail.com')
-            ->send(new ContactMessage($validated));
+        // // Send a copy to your email
+        // Mail::to('frasm688@gmail.com')
+        //     ->send(new ContactMessage($validated));
 
         return response()->json([
             'success' => true,
