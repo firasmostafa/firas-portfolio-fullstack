@@ -9,6 +9,8 @@ function AdminLogin() {
 
   const navigate = useNavigate();
 
+  const API_URL = import.meta.env.VITE_API_URL;
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -17,7 +19,7 @@ function AdminLogin() {
 
     try {
       const response = await fetch(
-        "http://127.0.0.1:8000/api/login",
+        `${API_URL}/api/login`,
         {
           method: "POST",
           headers: {
@@ -38,7 +40,10 @@ function AdminLogin() {
       }
 
       localStorage.setItem("admin_token", data.token);
-      localStorage.setItem("admin_user", JSON.stringify(data.user));
+      localStorage.setItem(
+        "admin_user",
+        JSON.stringify(data.user)
+      );
 
       navigate("/admin/projects");
     } catch (err) {
@@ -48,43 +53,55 @@ function AdminLogin() {
     }
   };
 
- return (
-  <div className="admin-login-page">
-    <div className="admin-login-card">
-      <h1>Admin Login</h1>
-      <p>Sign in to manage your portfolio</p>
+  return (
+    <div className="admin-login-page">
+      <div className="admin-login-card">
+        <h1>Admin Login</h1>
 
-      <form onSubmit={handleSubmit}>
-        <div className="admin-field">
-          <label>Email</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Enter your email"
-            required
-          />
-        </div>
+        <p>Sign in to manage your portfolio</p>
 
-        <div className="admin-field">
-          <label>Password</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Enter your password"
-            required
-          />
-        </div>
+        <form onSubmit={handleSubmit}>
+          <div className="admin-field">
+            <label>Email</label>
 
-        {error && <p className="admin-error">{error}</p>}
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter your email"
+              required
+            />
+          </div>
 
-        <button className="admin-login-btn" type="submit" disabled={loading}>
-          {loading ? "Logging in..." : "Login"}
-        </button>
-      </form>
+          <div className="admin-field">
+            <label>Password</label>
+
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter your password"
+              required
+            />
+          </div>
+
+          {error && (
+            <p className="admin-error">
+              {error}
+            </p>
+          )}
+
+          <button
+            className="admin-login-btn"
+            type="submit"
+            disabled={loading}
+          >
+            {loading ? "Logging in..." : "Login"}
+          </button>
+        </form>
+      </div>
     </div>
-  </div>
-);}
+  );
+}
 
-export default AdminLogin;  
+export default AdminLogin;

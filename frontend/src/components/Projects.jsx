@@ -6,6 +6,8 @@ function Projects() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  const API_URL = import.meta.env.VITE_API_URL;
+
   useEffect(() => {
     async function fetchProjects() {
       try {
@@ -13,7 +15,7 @@ function Projects() {
         setError("");
 
         const response = await fetch(
-          "http://127.0.0.1:8000/api/projects",
+          `${API_URL}/api/projects`,
           {
             headers: {
               Accept: "application/json",
@@ -40,7 +42,7 @@ function Projects() {
     }
 
     fetchProjects();
-  }, []);
+  }, [API_URL]);
 
   if (loading) {
     return (

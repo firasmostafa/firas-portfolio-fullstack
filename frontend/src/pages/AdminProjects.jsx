@@ -6,6 +6,7 @@ function AdminProjects() {
   const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
+  const API_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const token = localStorage.getItem("admin_token");
@@ -18,7 +19,7 @@ function AdminProjects() {
     async function fetchProjects() {
       try {
         const response = await fetch(
-          "http://127.0.0.1:8000/api/projects"
+          `${API_URL}/api/projects`
         );
 
         const data = await response.json();
@@ -40,7 +41,7 @@ function AdminProjects() {
     }
 
     fetchProjects();
-  }, [navigate]);
+  }, [navigate, API_URL]);
 
   const handleDelete = async (id) => {
     const confirmed = window.confirm(
@@ -58,7 +59,7 @@ function AdminProjects() {
 
     try {
       const response = await fetch(
-        `http://127.0.0.1:8000/api/projects/${id}`,
+        `${API_URL}/api/projects/${id}`,
         {
           method: "DELETE",
           headers: {
@@ -95,7 +96,7 @@ function AdminProjects() {
     try {
       if (token) {
         await fetch(
-          "http://127.0.0.1:8000/api/logout",
+          `${API_URL}/api/logout`,
           {
             method: "POST",
             headers: {

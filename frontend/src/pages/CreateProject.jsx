@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 function CreateProject() {
   const navigate = useNavigate();
 
+  const API_URL = import.meta.env.VITE_API_URL;
+
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -47,7 +49,7 @@ function CreateProject() {
 
     try {
       const authResponse = await fetch(
-        "http://127.0.0.1:8000/api/imagekit-auth",
+        `${API_URL}/api/imagekit-auth`,
         {
           headers: {
             Accept: "application/json",
@@ -69,18 +71,14 @@ function CreateProject() {
         token: uploadToken,
         signature,
         expire,
+        publicKey,
       } = authResult.data;
 
       const imageData = new FormData();
 
       imageData.append("file", imageFile);
       imageData.append("fileName", imageFile.name);
-
-      imageData.append(
-        "publicKey",
-        "public_Pm7q5UkXUkVaZYuFd2HyNZtE+mc="
-      );
-
+      imageData.append("publicKey", publicKey);
       imageData.append("token", uploadToken);
       imageData.append("signature", signature);
       imageData.append("expire", expire);
@@ -125,7 +123,7 @@ function CreateProject() {
       const imageUrl = await uploadImage();
 
       const response = await fetch(
-        "http://127.0.0.1:8000/api/projects",
+        `${API_URL}/api/projects`,
         {
           method: "POST",
           headers: {
@@ -160,7 +158,6 @@ function CreateProject() {
   return (
     <div className="admin-form-page">
       <div className="admin-form-card">
-
         <div className="admin-form-header">
           <button
             type="button"
@@ -172,13 +169,10 @@ function CreateProject() {
 
           <h1>Add New Project</h1>
 
-          <p>
-            Add a new project to your portfolio.
-          </p>
+          <p>Add a new project to your portfolio.</p>
         </div>
 
         <form onSubmit={handleSubmit}>
-
           <div className="admin-field">
             <label>Title</label>
 
@@ -281,7 +275,6 @@ function CreateProject() {
           )}
 
           <div className="admin-form-actions">
-
             <button
               type="button"
               className="admin-cancel-btn"
@@ -303,7 +296,6 @@ function CreateProject() {
                 ? "Adding Project..."
                 : "Add Project"}
             </button>
-
           </div>
         </form>
       </div>

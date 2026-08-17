@@ -5,6 +5,8 @@ function EditProject() {
   const { id } = useParams();
   const navigate = useNavigate();
 
+  const API_URL = import.meta.env.VITE_API_URL;
+
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -36,7 +38,7 @@ function EditProject() {
         setError("");
 
         const response = await fetch(
-          `http://127.0.0.1:8000/api/projects/${id}`,
+          `${API_URL}/api/projects/${id}`,
           {
             headers: {
               Accept: "application/json",
@@ -69,7 +71,7 @@ function EditProject() {
     }
 
     fetchProject();
-  }, [id, navigate]);
+  }, [id, navigate, API_URL]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -118,7 +120,7 @@ function EditProject() {
 
     try {
       const authResponse = await fetch(
-        "http://127.0.0.1:8000/api/imagekit-auth",
+        `${API_URL}/api/imagekit-auth`,
         {
           method: "GET",
           headers: {
@@ -134,46 +136,45 @@ function EditProject() {
 
       if (!authResponse.ok) {
         throw new Error(
-          authResult.message || "Could not get ImageKit authentication."
+          authResult.message ||
+            "Could not get ImageKit authentication."
         );
       }
 
       const authData = authResult.data;
 
-      if (!authData?.token || !authData?.signature || !authData?.expire) {
-        throw new Error("ImageKit authentication data is incomplete.");
+      if (
+        !authData?.token ||
+        !authData?.signature ||
+        !authData?.expire
+      ) {
+        throw new Error(
+          "ImageKit authentication data is incomplete."
+        );
       }
 
-   const {
-  token: uploadToken,
-  signature,
-  expire,
-  publicKey,
-} = authData;
+      const {
+        token: uploadToken,
+        signature,
+        expire,
+        publicKey,
+      } = authData;
 
-const imageData = new FormData();
+      const imageData = new FormData();
 
-imageData.append("file", imageFile);
-imageData.append(
-  "fileName",
-  `${Date.now()}-${imageFile.name}`
-);
+      imageData.append("file", imageFile);
 
-imageData.append("publicKey", publicKey);
+      imageData.append(
+        "fileName",
+        `${Date.now()}-${imageFile.name}`
+      );
 
-imageData.append("token", uploadToken);
-imageData.append("signature", signature);
-imageData.append("expire", String(expire));
-
-imageData.append(
-  "folder",
-  "/portfolio-projects"
-);
-
-imageData.append(
-  "useUniqueFileName",
-  "true"
-);
+      imageData.append("publicKey", publicKey);
+      imageData.append("token", uploadToken);
+      imageData.append("signature", signature);
+      imageData.append("expire", String(expire));
+      imageData.append("folder", "/portfolio-projects");
+      imageData.append("useUniqueFileName", "true");
 
       const uploadResponse = await fetch(
         "https://upload.imagekit.io/api/v1/files/upload",
@@ -196,7 +197,9 @@ imageData.append(
       }
 
       if (!uploadResult.url) {
-        throw new Error("ImageKit did not return an image URL.");
+        throw new Error(
+          "ImageKit did not return an image URL."
+        );
       }
 
       return uploadResult.url;
@@ -230,7 +233,7 @@ imageData.append(
       };
 
       const response = await fetch(
-        `http://127.0.0.1:8000/api/projects/${id}`,
+        `${API_URL}/api/projects/${id}`,
         {
           method: "PUT",
           headers: {
@@ -255,7 +258,9 @@ imageData.append(
           throw new Error(validationErrors);
         }
 
-        throw new Error(data.message || "Failed to update project.");
+        throw new Error(
+          data.message || "Failed to update project."
+        );
       }
 
       navigate("/admin/projects");
@@ -271,7 +276,9 @@ imageData.append(
     return (
       <div className="admin-form-page">
         <div className="admin-form-card">
-          <p className="admin-loading">Loading project...</p>
+          <p className="admin-loading">
+            Loading project...
+          </p>
         </div>
       </div>
     );
@@ -290,12 +297,16 @@ imageData.append(
           </button>
 
           <h1>Edit Project</h1>
-          <p>Update your project information and image.</p>
+
+          <p>
+            Update your project information and image.
+          </p>
         </div>
 
         <form onSubmit={handleSubmit}>
           <div className="admin-field">
             <label htmlFor="title">Title</label>
+
             <input
               id="title"
               type="text"
@@ -308,7 +319,10 @@ imageData.append(
           </div>
 
           <div className="admin-field">
-            <label htmlFor="description">Description</label>
+            <label htmlFor="description">
+              Description
+            </label>
+
             <textarea
               id="description"
               name="description"
@@ -325,12 +339,16 @@ imageData.append(
 
             {preview && (
               <div className="admin-image-preview">
-                <img src={preview} alt="Project preview" />
+                <img
+                  src={preview}
+                  alt="Project preview"
+                />
               </div>
             )}
 
             <label className="admin-file-button">
               Choose New Image
+
               <input
                 type="file"
                 accept="image/png,image/jpeg,image/jpg,image/webp"
@@ -339,7 +357,8 @@ imageData.append(
             </label>
 
             <small className="admin-file-help">
-              Choose an image from your laptop or phone. Maximum 5 MB.
+              Choose an image from your laptop or phone.
+              Maximum 5 MB.
             </small>
 
             {imageFile && (
@@ -350,7 +369,10 @@ imageData.append(
           </div>
 
           <div className="admin-field">
-            <label htmlFor="github_url">GitHub URL</label>
+            <label htmlFor="github_url">
+              GitHub URL
+            </label>
+
             <input
               id="github_url"
               type="url"
@@ -362,7 +384,10 @@ imageData.append(
           </div>
 
           <div className="admin-field">
-            <label htmlFor="live_url">Live URL</label>
+            <label htmlFor="live_url">
+              Live URL
+            </label>
+
             <input
               id="live_url"
               type="url"
@@ -374,7 +399,10 @@ imageData.append(
           </div>
 
           <div className="admin-field">
-            <label htmlFor="technologies">Technologies</label>
+            <label htmlFor="technologies">
+              Technologies
+            </label>
+
             <input
               id="technologies"
               type="text"
@@ -385,14 +413,20 @@ imageData.append(
             />
           </div>
 
-          {error && <p className="admin-error">{error}</p>}
+          {error && (
+            <p className="admin-error">
+              {error}
+            </p>
+          )}
 
           <div className="admin-form-actions">
             <button
               type="button"
               className="admin-cancel-btn"
               disabled={saving || uploadingImage}
-              onClick={() => navigate("/admin/projects")}
+              onClick={() =>
+                navigate("/admin/projects")
+              }
             >
               Cancel
             </button>
