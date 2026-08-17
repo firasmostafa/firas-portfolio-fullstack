@@ -67,4 +67,4 @@ RUN sed -ri \
 
 EXPOSE 80
 
-CMD ["sh", "-c", "mkdir -p /var/www/html/storage/app/firebase && cp /etc/secrets/firebase-credentials.json /var/www/html/storage/app/firebase/firebase-credentials.json && chown www-data:www-data /var/www/html/storage/app/firebase/firebase-credentials.json && chmod 600 /var/www/html/storage/app/firebase/firebase-credentials.json && export FIREBASE_CREDENTIALS=/var/www/html/storage/app/firebase/firebase-credentials.json && php artisan migrate --force && apache2-foreground"]
+CMD ["sh", "-c", "php artisan migrate --force && php artisan db:seed --force && apache2-foreground"]
