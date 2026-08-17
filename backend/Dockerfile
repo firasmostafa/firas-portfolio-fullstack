@@ -13,8 +13,10 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-RUN pecl install grpc \
-    && docker-php-ext-enable grpc
+COPY --from=ghcr.io/mlocati/php-extension-installer:2.11.1 \
+    /usr/bin/install-php-extensions /usr/local/bin/
+
+RUN install-php-extensions grpc
 
 RUN a2enmod rewrite
 
