@@ -56,7 +56,7 @@ RUN composer dump-autoload --optimize
 
 RUN chown -R www-data:www-data storage bootstrap/cache \
     && chmod -R 775 storage bootstrap/cache
-
+RUN usermod -a -G 1000 www-data
 
 RUN sed -ri \
     -e 's!/var/www/html!/var/www/html/public!g' \
@@ -67,4 +67,4 @@ RUN sed -ri \
 
 EXPOSE 80
 
-CMD ["sh", "-c", "chmod 644 /etc/secrets/firebase-credentials.json && php artisan migrate --force && php artisan db:seed --force && apache2-foreground"]
+CMD ["sh", "-c", "php artisan migrate --force && php artisan db:seed --force && apache2-foreground"]
