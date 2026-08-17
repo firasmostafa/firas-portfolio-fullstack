@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller
 {
@@ -19,6 +20,9 @@ class AuthController extends Controller
         $user = User::where('email', $validated['email'])->first();
         Log::info('ADMIN LOGIN DEBUG', [
     'email' => $validated['email'],
+    'database' => DB::connection()->getDatabaseName(),
+    'users_count' => User::count(),
+    'emails' => User::pluck('email')->toArray(),
     'user_found' => $user !== null,
     'password_matches' => $user
         ? Hash::check($validated['password'], $user->password)
