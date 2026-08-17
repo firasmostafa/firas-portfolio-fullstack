@@ -44,8 +44,8 @@ RUN composer install \
     --no-dev \
     --optimize-autoloader \
     --no-interaction \
-    --no-scripts
-
+    --no-scripts \
+    --prefer-source
 
 # Copy Laravel project
 COPY . .
