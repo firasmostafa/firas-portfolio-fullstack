@@ -21,6 +21,9 @@ WORKDIR /var/www/html
 
 COPY . .
 
+RUN pecl install grpc \
+    && docker-php-ext-enable grpc
+
 RUN composer install \
     --no-dev \
     --optimize-autoloader \
@@ -36,4 +39,5 @@ RUN sed -ri \
     /etc/apache2/conf-available/*.conf
 
 EXPOSE 80
+
 CMD ["sh", "-c", "php artisan migrate --force && apache2-foreground"]
