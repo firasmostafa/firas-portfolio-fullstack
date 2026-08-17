@@ -13,21 +13,26 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+RUN pecl install grpc \
+    && docker-php-ext-enable grpc
+
 RUN a2enmod rewrite
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
-COPY . .
-
-RUN pecl install grpc \
-    && docker-php-ext-enable grpc
+COPY composer.json composer.lock ./
 
 RUN composer install \
     --no-dev \
     --optimize-autoloader \
-    --no-interaction
+    --no-interaction \
+    --no-scripts
+
+COPY . .
+
+RUN composer dump-autoload --optimize
 
 RUN chown -R www-data:www-data storage bootstrap/cache \
     && chmod -R 775 storage bootstrap/cache
