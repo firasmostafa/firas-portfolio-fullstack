@@ -67,4 +67,4 @@ RUN sed -ri \
 
 EXPOSE 80
 
-CMD ["sh", "-c", "php artisan migrate --force && php artisan db:seed --force && apache2-foreground"]
+CMD ["sh", "-c", "chmod 644 /etc/secrets/firebase-credentials.json && php artisan migrate --force && php artisan db:seed --force && apache2-foreground"]
