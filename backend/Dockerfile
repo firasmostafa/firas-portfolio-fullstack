@@ -56,8 +56,8 @@ RUN composer dump-autoload --optimize
 
 RUN chown -R www-data:www-data storage bootstrap/cache \
     && chmod -R 775 storage bootstrap/cache
-RUN usermod -a -G 1000 www-data
-
+RUN groupadd -g 1000 rendersecrets \
+    && usermod -a -G rendersecrets www-data
 RUN sed -ri \
     -e 's!/var/www/html!/var/www/html/public!g' \
     /etc/apache2/sites-available/*.conf \
