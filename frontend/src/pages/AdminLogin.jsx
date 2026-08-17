@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { Link } from "react-router-dom";
 function AdminLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -60,6 +60,7 @@ function AdminLogin() {
 
         <p>Sign in to manage your portfolio</p>
 
+
         <form onSubmit={handleSubmit}>
           <div className="admin-field">
             <label>Email</label>
@@ -98,6 +99,10 @@ function AdminLogin() {
           >
             {loading ? "Logging in..." : "Login"}
           </button>
+                  <Link to="/" className="admin-back-home">
+  ← Back to Website
+</Link>
+
         </form>
       </div>
     </div>

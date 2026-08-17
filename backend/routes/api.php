@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\MessageController;
-
+use App\Http\Controllers\SiteContentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,8 +21,8 @@ Route::get('/projects/{id}', [ProjectController::class, 'show']);
 
 // Anyone can send a contact message
 Route::post('/messages', [MessageController::class, 'store']);
-
-
+ // Anyone can view site content
+Route::get('/site-content', [SiteContentController::class, 'index']);
 /*
 |--------------------------------------------------------------------------
 | Protected Admin Routes
@@ -45,4 +45,19 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/messages/{message}', [MessageController::class, 'destroy']);
 
     Route::get('/imagekit-auth', [ImageKitController::class, 'auth']);
+// Site content management
+Route::middleware('auth:sanctum')->group(function () {
+
+    Route::put(
+        '/site-content',
+        [SiteContentController::class, 'update']
+    );
+
+    Route::patch(
+        '/site-content',
+        [SiteContentController::class, 'update']
+    );
+
+});
+
 });

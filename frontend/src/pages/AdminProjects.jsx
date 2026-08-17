@@ -147,6 +147,13 @@ function AdminProjects() {
           >
             + Add Project
           </button>
+          <button
+  type="button"
+  className="admin-add-btn"
+  onClick={() => navigate("/admin/site-content")}
+>
+  Edit Site Content
+</button>
 
           <button
             type="button"
@@ -211,6 +218,7 @@ function AdminProjects() {
                 </div>
               </div>
             </div>
+            
           ))
         )}
       </div>
