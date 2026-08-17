@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
@@ -16,6 +17,14 @@ class AuthController extends Controller
         ]);
 
         $user = User::where('email', $validated['email'])->first();
+        Log::info('ADMIN LOGIN DEBUG', [
+    'email' => $validated['email'],
+    'user_found' => $user !== null,
+    'password_matches' => $user
+        ? Hash::check($validated['password'], $user->password)
+        : false,
+    'role' => $user?->role,
+]);
 
         if (!$user || !Hash::check($validated['password'], $user->password)) {
             return response()->json([
