@@ -14,6 +14,9 @@ function Footer() {
   return (
     <footer className="footer">
       <div className="footer-content">
+        <Link to="/admin/login" className="footer-admin-link">
+  Admin
+</Link>
 
         <div className="footer-brand">
           <h3>Firas.dev</h3>

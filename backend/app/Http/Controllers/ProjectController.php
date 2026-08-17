@@ -2,17 +2,38 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Project;
 use Illuminate\Http\Request;
+use Kreait\Laravel\Firebase\Facades\Firebase;
 
 class ProjectController extends Controller
 {
+    /**
+     * Get Firestore database.
+     */
+    private function firestore()
+    {
+        return Firebase::firestore()->database();
+    }
+
     /**
      * Display all projects.
      */
     public function index()
     {
-        $projects = Project::latest()->get();
+        $documents = $this->firestore()
+            ->collection('projects')
+            ->documents();
+
+        $projects = [];
+
+        foreach ($documents as $document) {
+            if ($document->exists()) {
+                $projects[] = [
+                    'id' => $document->id(),
+                    ...$document->data(),
+                ];
+            }
+        }
 
         return response()->json([
             'success' => true,
@@ -28,61 +49,126 @@ class ProjectController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'image' => 'nullable|string|max:255',
-            'github_url' => 'nullable|url|max:255',
-            'live_url' => 'nullable|url|max:255',
-            'technologies' => 'nullable|string|max:255',
+            'image_url' => 'nullable|string|max:1000',
+            'github_url' => 'nullable|url|max:1000',
+            'live_url' => 'nullable|url|max:1000',
+            'technologies' => 'nullable|string|max:1000',
         ]);
 
-        $project = Project::create($validated);
+        $document = $this->firestore()
+            ->collection('projects')
+            ->newDocument();
+
+        $document->set([
+            'title' => $validated['title'],
+            'description' => $validated['description'],
+            'image_url' => $validated['image_url'] ?? '',
+            'github_url' => $validated['github_url'] ?? '',
+            'live_url' => $validated['live_url'] ?? '',
+            'technologies' => $validated['technologies'] ?? '',
+            'created_at' => now()->toIso8601String(),
+        ]);
 
         return response()->json([
             'success' => true,
             'message' => 'Project created successfully.',
-            'data' => $project,
+            'data' => [
+                'id' => $document->id(),
+                ...$validated,
+            ],
         ], 201);
     }
 
     /**
      * Display one project.
      */
-    public function show(Project $project)
+    public function show(string $id)
     {
+        $document = $this->firestore()
+            ->collection('projects')
+            ->document($id)
+            ->snapshot();
+
+        if (!$document->exists()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Project not found.',
+            ], 404);
+        }
+
         return response()->json([
             'success' => true,
-            'data' => $project,
+            'data' => [
+                'id' => $document->id(),
+                ...$document->data(),
+            ],
         ]);
     }
 
     /**
      * Update a project.
      */
-    public function update(Request $request, Project $project)
+    public function update(Request $request, string $id)
     {
         $validated = $request->validate([
             'title' => 'sometimes|required|string|max:255',
             'description' => 'sometimes|required|string',
-            'image' => 'nullable|string|max:255',
-            'github_url' => 'nullable|url|max:255',
-            'live_url' => 'nullable|url|max:255',
-            'technologies' => 'nullable|string|max:255',
+            'image_url' => 'nullable|string|max:1000',
+            'github_url' => 'nullable|url|max:1000',
+            'live_url' => 'nullable|url|max:1000',
+            'technologies' => 'nullable|string|max:1000',
         ]);
 
-        $project->update($validated);
+        $document = $this->firestore()
+            ->collection('projects')
+            ->document($id);
+
+        $snapshot = $document->snapshot();
+
+        if (!$snapshot->exists()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Project not found.',
+            ], 404);
+        }
+
+        $validated['updated_at'] = now()->toIso8601String();
+
+        $document->set($validated, [
+            'merge' => true,
+        ]);
+
+        $updated = $document->snapshot();
 
         return response()->json([
             'success' => true,
             'message' => 'Project updated successfully.',
-            'data' => $project,
+            'data' => [
+                'id' => $updated->id(),
+                ...$updated->data(),
+            ],
         ]);
     }
 
     /**
      * Delete a project.
      */
-    public function destroy(Project $project)
+    public function destroy(string $id)
     {
-        $project->delete();
+        $document = $this->firestore()
+            ->collection('projects')
+            ->document($id);
+
+        $snapshot = $document->snapshot();
+
+        if (!$snapshot->exists()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Project not found.',
+            ], 404);
+        }
+
+        $document->delete();
 
         return response()->json([
             'success' => true,

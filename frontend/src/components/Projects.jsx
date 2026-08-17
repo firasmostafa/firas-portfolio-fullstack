@@ -7,24 +7,37 @@ function Projects() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const fetchProjects = async () => {
+    async function fetchProjects() {
       try {
-        const response = await fetch("/api/projects");
+        setLoading(true);
+        setError("");
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch projects");
-        }
+        const response = await fetch(
+          "http://127.0.0.1:8000/api/projects",
+          {
+            headers: {
+              Accept: "application/json",
+            },
+          }
+        );
 
         const result = await response.json();
 
-        setProjects(result.data);
+        if (!response.ok) {
+          throw new Error(
+            result.message || "Failed to fetch projects."
+          );
+        }
+
+        setProjects(result.data || []);
       } catch (error) {
-        console.error(error);
+        console.error("PROJECTS ERROR:", error);
+
         setError("Unable to load projects.");
       } finally {
         setLoading(false);
       }
-    };
+    }
 
     fetchProjects();
   }, []);
@@ -60,17 +73,21 @@ function Projects() {
         </p>
 
         <div className="projects-grid">
-          {projects.map((project) => (
-            <ProjectCard
-              key={project.id}
-              title={project.title}
-              description={project.description}
-              image={`/${project.image}`}
-              link={project.github_url}
-              liveUrl={project.live_url}
-              technologies={project.technologies}
-            />
-          ))}
+          {projects.length === 0 ? (
+            <p>No projects available yet.</p>
+          ) : (
+            projects.map((project) => (
+              <ProjectCard
+                key={project.id}
+                title={project.title}
+                description={project.description}
+                image={project.image_url}
+                link={project.github_url}
+                liveUrl={project.live_url}
+                technologies={project.technologies}
+              />
+            ))
+          )}
         </div>
       </div>
     </section>
